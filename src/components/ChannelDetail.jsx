@@ -6,18 +6,25 @@ import { Videos, ChannelCard } from "./";
 import { fetchFromAPI } from "../utils/fetchFromAPI";
 
 const ChannelDetail = () => {
-  const {id} =useParams();
-  const [channelDetail, setChannelDetail] = useState(null);
-  const [videos, setVideos] = useState([]);
-  useEffect(() => {
-    fetchFromAPI(`channels?part=snippet&id=${id}`)
-    .then((data) => setChannelDetail(data?.items[0]))
-    .catch((error) => console.error("Error fetching data:", error));
+  const [channelDetail, setChannelDetail] = useState();
+  const [videos, setVideos] = useState(null);
 
-    fetchFromAPI(`search?channelId=${id}part=snippet&order=date`)
-    .then((data) => setVideos(data?.items))
-    .catch((error) => console.error("Error fetching data:", error));
+  const { id } = useParams();
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      const data = await fetchFromAPI(`channels?part=snippet&id=${id}`);
+
+      setChannelDetail(data?.items[0]);
+
+      const videosData = await fetchFromAPI(`search?channelId=${id}&part=snippet%2Cid&order=date`);
+
+      setVideos(videosData?.items);
+    };
+
+    fetchResults();
   }, [id]);
+
   return (
     <Box minHeight="95vh">
       <Box>
@@ -33,8 +40,7 @@ const ChannelDetail = () => {
         <Videos videos={videos} />
       </Box>
     </Box>
-    
-  )
-}
+  );
+};
 
-export default ChannelDetail
+export default ChannelDetail;

@@ -1,33 +1,19 @@
 import axios from 'axios';
 
-export const BASE_URL =  'https://youtube-v31.p.rapidapi.com/captions';
+export const BASE_URL = 'https://youtube-v31.p.rapidapi.com';
 
-  const options = {
-
-  url: BASE_URL,
+const options = {
   params: {
-    part: 'snippet',
-    videoId: 'M7FIvfx5J10',
-    
+    maxResults: 50,
   },
   headers: {
-    'X-RapidAPI-Key': 'f865aab3b5msh0ec972e6afe12eap10f60djsn02658f90fe7b',
-    'X-RapidAPI-Host': 'youtube-v3-alternative.p.rapidapi.com'
-  }
+    'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
+    'X-RapidAPI-Host': 'youtube-v31.p.rapidapi.com',
+  },
 };
 
-
 export const fetchFromAPI = async (url) => {
-  try {
-    const { data } = await axios.get(`${BASE_URL}/${url}`, options);
-    return data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
+  const { data } = await axios.get(`${BASE_URL}/${url}`, options);
 
-    if (error.response) {
-      console.error("Response data:", error.response.data);
-    }
-
-    throw error;
-  }
+  return data;
 };
